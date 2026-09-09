@@ -50,6 +50,7 @@ function Game() {
   const [testedWords, setTestedWords] = useState([]);
   const target = Gettargetword();
   const [status, setStatus] = useState(isGoodWord(word, target));
+  const [absentLetters, setAbsentLetters] = useState([]);
 
   function handleSubmit() {
     if (word.length !== 5) {
@@ -59,6 +60,15 @@ function Game() {
     const result = isGoodWord(word.toLowerCase(), target);
 
     setStatus(result);
+
+    const newAbsentLetters = word
+    .toUpperCase()
+    .split("")
+    .filter((letter, index) => result[index] === "false");
+
+    setAbsentLetters((prev) => [
+      ...new Set([...prev, ...newAbsentLetters]),
+    ]);
   }
 
   const handleKeyClick = (letter) => {
@@ -112,7 +122,7 @@ function Game() {
 
       </div>
       <div>
-        <Clavier onKeyClick={handleKeyClick} />
+        <Clavier onKeyClick={handleKeyClick} absentLetters={absentLetters}/>
      
           <div className="special-keys">
              <Key letter="Effacer" onClick={handleEffacer} />
