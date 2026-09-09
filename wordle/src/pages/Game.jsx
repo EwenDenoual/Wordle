@@ -49,7 +49,7 @@ function Game() {
   const [word, setWord] = useState("");
   const [testedWords, setTestedWords] = useState([]);
   const target = Gettargetword();
-  const [status, setStatus] = useState(isGoodWord(word, target));
+  const [attempts, setAttempts] = useState([]);
   const [absentLetters, setAbsentLetters] = useState([]);
 
   function handleSubmit() {
@@ -57,9 +57,13 @@ function Game() {
       return;
     }
 
+    if (attempts.length >= 5) {
+    return;
+    }
+
     const result = isGoodWord(word.toLowerCase(), target);
 
-    setStatus(result);
+    setAttempts((prev) => [...prev, result]);
 
     const newAbsentLetters = word
     .toUpperCase()
@@ -83,8 +87,18 @@ function Game() {
     };
   
     const handleEntrer = () => {
-      handleSubmit();
+      if (word.length !== 5) {
+        return;
+      }
+
+      if (attempts.length >= 5) {
+        return;
+      }
+
       setTestedWords((prev) => [...prev, word]);
+
+      handleSubmit();
+
       setWord("");
     };
   
@@ -110,13 +124,38 @@ function Game() {
 
   return (
     <div className="page">
-      <div className="status-container">
+      <div className="game-board">
 
-        {status.map((s, index) => (
-        <div key={index} className={`status-card ${s}`}>
-          <h2>{word[index]}</h2>
-        </div>
-        ))}
+        {Array.from({ length: 5 }).map((_, rowIndex) => {
+        const attempt = attempts[rowIndex];
+
+        const currentWord =
+          rowIndex === attempts.length
+            ? word
+            :testedWords[rowIndex] || "";
+      
+        return (
+          <div className="status-container" key={rowIndex}>
+            {Array.from({ length: 5 }).map((_, colIndex) => {
+
+              const status = attempt
+                ? attempt[colIndex]
+                : "empty";
+
+              const letter = currentWord[colIndex] || "";
+
+              return (
+                <div
+                  key={colIndex}
+                  className={`status-card ${status}`}
+                >
+                  <h2>{letter}</h2>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
       </div>
       <div className="input-container">
 
@@ -128,12 +167,6 @@ function Game() {
              <Key letter="Effacer" onClick={handleEffacer} />
              <Key letter="Entrer" onClick={handleEntrer} />
           </div>
-          <div>
-             <h3>Mots testés :</h3>
-             {testedWords.map((word, index) => (
-               <p key={index}>{word}</p>
-             ))}
-           </div>
          </div>
     </div>
   );

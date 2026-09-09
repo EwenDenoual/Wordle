@@ -14,13 +14,25 @@
   gap: 20px;
 }
 
+.game-board {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .status-card {
   width: 30px;
   padding: 30px;
+  padding: 15px;
   border-radius: 15px;
   text-align: center;
   color: white;
   transition: 0.3s;
+}
+.status-card.empty {
+  background-color: #7a7979;
+  border: 2px solid #ccc;
+  color: black;
 }
 
 .status-card h2 {
