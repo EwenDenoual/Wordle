@@ -109,3 +109,12 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+.key {
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.key-default { background: #8bafde; }
+.key-gray    { background: #787c7e; color: white; }
