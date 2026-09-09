@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Game.css";
 import Clavier from "./clavier";
 import Key from "./Key";
@@ -46,6 +47,8 @@ function Gettargetword() {
 }
 
 function Game() {
+  const navigate = useNavigate(); 
+
   const [word, setWord] = useState("");
   const [testedWords, setTestedWords] = useState([]);
   const target = Gettargetword();
@@ -58,12 +61,14 @@ function Game() {
     }
 
     if (attempts.length >= 5) {
-    return;
+      return;
     }
 
     const result = isGoodWord(word.toLowerCase(), target);
 
     setAttempts((prev) => [...prev, result]);
+
+    setTestedWords((prev) => [...prev, word]);
 
     const newAbsentLetters = word
     .toUpperCase()
@@ -73,6 +78,28 @@ function Game() {
     setAbsentLetters((prev) => [
       ...new Set([...prev, ...newAbsentLetters]),
     ]);
+
+     if (word.toLowerCase() === target.toLowerCase()) {
+      navigate("/Resultat", {
+        state: {
+          win: true,
+          target: target,
+          attempts: attempts.length + 1,
+        },
+      });
+      return;
+    }
+
+  
+    if (attempts.length === 4) {
+      navigate("/Resultat", {
+        state: {
+          win: false,
+          target: target,
+          attempts: 5,
+        },
+      });
+    }
   }
 
   const handleKeyClick = (letter) => {
@@ -94,8 +121,6 @@ function Game() {
       if (attempts.length >= 5) {
         return;
       }
-
-      setTestedWords((prev) => [...prev, word]);
 
       handleSubmit();
 
