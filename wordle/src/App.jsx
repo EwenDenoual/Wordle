@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Accueil from "./pages/Accueil";
-import PageSuivante from "./pages/PageSuivante";
+import Game from "./pages/Game";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Accueil />} />
-        <Route path="/suivant" element={<PageSuivante />} />
+        <Route path="/Game" element={<Game />} />
       </Routes>
     </BrowserRouter>
   );

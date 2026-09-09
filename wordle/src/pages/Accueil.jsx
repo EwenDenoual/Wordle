@@ -10,7 +10,7 @@ function Accueil() {
         <h1>Bienvenue sur mon site</h1>
 
         <p>
-          Découvrez mon application React.
+          Découvrez notre wordle !
         </p>
 
         <button 
