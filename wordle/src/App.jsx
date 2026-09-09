@@ -17,19 +17,7 @@ function App() {
       </Routes>
     </BrowserRouter>
   );
-
-
-
-// function App() {
-//   const [absentLetters, setAbsentLetters] = useState([]);
-
-//   const handleKeyClick = (letter) => {
-//     console.log("Lettre cliquée :", letter);
-//     setAbsentLetters((prev) => [...prev, letter]);
-//   };
-
-//   return <Clavier absentLetters={absentLetters} onKeyClick={handleKeyClick} />;
-// }
+}
 
 
 

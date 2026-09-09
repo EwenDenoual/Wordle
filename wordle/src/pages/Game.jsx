@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Game.css";
 
 function isGoodWord(word, target) {
@@ -15,9 +15,28 @@ function isGoodWord(word, target) {
   return status;
 }
 
+function Gettargetword() {
+  const [target, setTarget] = useState("");
+  useEffect(() => {
+    fetch("/api/word?lang=fr", {
+           headers: {
+             "x-api-key": "chocapik"
+           }
+         })
+      .then((response) => response.json())
+      .then((data) => {
+        setTarget(data.word);
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération du mot :", error);
+      });
+  }, []);
+  return target;
+}
+
 function Game() {
-  const [word, setWord] = useState("     ");
-  const target = "world";
+  const [word, setWord] = useState("");
+  const target = Gettargetword();
   const [status, setStatus] = useState(isGoodWord(word, target));
 
   function handleSubmit() {
