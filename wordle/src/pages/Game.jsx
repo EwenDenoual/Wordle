@@ -16,41 +16,45 @@ function isGoodWord(word, target) {
 }
 
 function Game() {
-  const [status, setStatus] = useState(isGoodWord("hello", "world"));
+  const [word, setWord] = useState("     ");
+  const target = "world";
+  const [status, setStatus] = useState(isGoodWord(word, target));
 
+  function handleSubmit() {
+    if (word.length !== 5) {
+      return;
+    }
+
+    const result = isGoodWord(word.toLowerCase(), target);
+
+    setStatus(result);
+  }
   return (
     <div className="page">
       <div className="status-container">
-        <div className={`status-card ${status[0]}`}>
-          <h2>L</h2>
+
+        {status.map((s, index) => (
+        <div key={index} className={`status-card ${s}`}>
+          <h2>{word[index]}</h2>
         </div>
-        <div className={`status-card ${status[1]}`}>
-          <h2>L</h2>
-        </div>
-        <div className={`status-card ${status[2]}`}>
-          <h2>L</h2>
-        </div>
-        <div className={`status-card ${status[3]}`}>
-          <h2>L</h2>
-        </div>
-        <div className={`status-card ${status[4]}`}>
-          <h2>L</h2>
-        </div>
+        ))}
+      </div>
+      <div className="input-container">
+
+        <input
+          type="text"
+          maxLength="5"
+          value={word}
+          onChange={(event) => setWord(event.target.value)}
+          placeholder="Entrez un mot"
+        />
+
+        <button onClick={handleSubmit}>
+          Valider
+        </button>
+
       </div>
 
-      <div className="buttons">
-        <button onClick={() => setStatus(["good", status[1], status[2], status[3], status[4]])}>
-          Good
-        </button>
-
-        <button onClick={() => setStatus(["placed", status[1], status[2], status[3], status[4]])}>
-          Placed
-        </button>
-
-        <button onClick={() => setStatus(["false", status[1], status[2], status[3], status[4]])}>
-          False
-        </button>
-      </div>
     </div>
   );
 }
