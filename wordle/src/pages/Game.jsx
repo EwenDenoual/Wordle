@@ -29,7 +29,7 @@ function Gettargetword() {
       })
       .catch((error) => {
         console.error("Erreur lors de la récupération du mot :", error);
-        setTarget("word"); // Valeur par défaut en cas d'erreur
+        setTarget("words"); // Valeur par défaut en cas d'erreur
       });
   }, []);
   return target;

@@ -3,9 +3,9 @@ import Accueil from "./pages/Accueil";
 import Game from "./pages/Game";
 
 import { useState } from "react";
-import { Clavier } from "./clavier";
+import { Clavier } from "./pages/clavier";
 
-import { Test } from "./clavier";
+import { Test } from "./pages/clavier";
 
 function App() {
   return (
