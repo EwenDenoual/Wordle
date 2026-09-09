@@ -1,5 +1,16 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Game.css";
+import Clavier from "./clavier";
+import Key from "./Key";
+
+const rows = [
+  ["A", "Z", "E", "R", "T", "Y", "U", "I", "O", "P"],
+  ["Q", "S", "D", "F", "G", "H", "J", "K", "L", "M"],
+  ["W", "X", "C", "V", "B", "N",],
+];
+
+const allLetters = rows.flat();
 
 function isGoodWord(word, target) {
   const status = ["false", "false", "false", "false", "false"];
@@ -29,52 +40,159 @@ function Gettargetword() {
       })
       .catch((error) => {
         console.error("Erreur lors de la récupération du mot :", error);
-        setTarget("word"); // Valeur par défaut en cas d'erreur
+        setTarget("words"); // Valeur par défaut en cas d'erreur
       });
   }, []);
   return target;
 }
 
 function Game() {
+  const navigate = useNavigate(); 
+
   const [word, setWord] = useState("");
+  const [testedWords, setTestedWords] = useState([]);
   const target = Gettargetword();
-  const [status, setStatus] = useState(isGoodWord(word, target));
+  const [attempts, setAttempts] = useState([]);
+  const [absentLetters, setAbsentLetters] = useState([]);
 
   function handleSubmit() {
     if (word.length !== 5) {
       return;
     }
 
+    if (attempts.length >= 5) {
+      return;
+    }
+
     const result = isGoodWord(word.toLowerCase(), target);
 
-    setStatus(result);
+    setAttempts((prev) => [...prev, result]);
+
+    setTestedWords((prev) => [...prev, word]);
+
+    const newAbsentLetters = word
+    .toUpperCase()
+    .split("")
+    .filter((letter, index) => result[index] === "false");
+
+    setAbsentLetters((prev) => [
+      ...new Set([...prev, ...newAbsentLetters]),
+    ]);
+
+     if (word.toLowerCase() === target.toLowerCase()) {
+      navigate("/Resultat", {
+        state: {
+          win: true,
+          target: target,
+          attempts: attempts.length + 1,
+        },
+      });
+      return;
+    }
+
+  
+    if (attempts.length === 4) {
+      navigate("/Resultat", {
+        state: {
+          win: false,
+          target: target,
+          attempts: 5,
+        },
+      });
+    }
   }
+
+  const handleKeyClick = (letter) => {
+      if (word.length >= 5) {
+        return;
+      }
+      setWord((prev) => prev + letter);
+    };
+  
+    const handleEffacer = () => {
+      setWord((prev) => prev.slice(0, -1));
+    };
+  
+    const handleEntrer = () => {
+      if (word.length !== 5) {
+        return;
+      }
+
+      if (attempts.length >= 5) {
+        return;
+      }
+
+      handleSubmit();
+
+      setWord("");
+    };
+  
+    useEffect(() => {
+      const handlePhysicalKeyDown = (e) => {
+        const key = e.key.toUpperCase();
+  
+        if (key === "ENTER") {
+          handleEntrer();
+        } else if (key === "BACKSPACE") {
+          handleEffacer();
+        } else if (allLetters.includes(key)) {
+          handleKeyClick(key);
+        }
+      };
+  
+      window.addEventListener("keydown", handlePhysicalKeyDown);
+  
+      return () => {
+        window.removeEventListener("keydown", handlePhysicalKeyDown);
+      };
+    }, [word]);
+
   return (
     <div className="page">
-      <div className="status-container">
+      <div className="game-board">
 
-        {status.map((s, index) => (
-        <div key={index} className={`status-card ${s}`}>
-          <h2>{word[index]}</h2>
-        </div>
-        ))}
+        {Array.from({ length: 5 }).map((_, rowIndex) => {
+        const attempt = attempts[rowIndex];
+
+        const currentWord =
+          rowIndex === attempts.length
+            ? word
+            :testedWords[rowIndex] || "";
+      
+        return (
+          <div className="status-container" key={rowIndex}>
+            {Array.from({ length: 5 }).map((_, colIndex) => {
+
+              const status = attempt
+                ? attempt[colIndex]
+                : "empty";
+
+              const letter = currentWord[colIndex] || "";
+
+              return (
+                <div
+                  key={colIndex}
+                  className={`status-card ${status}`}
+                >
+                  <h2>{letter}</h2>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
       </div>
       <div className="input-container">
 
-        <input
-          type="text"
-          maxLength="5"
-          value={word}
-          onChange={(event) => setWord(event.target.value)}
-          placeholder="Entrez un mot"
-        />
-
-        <button onClick={handleSubmit}>
-          Valider
-        </button>
-
       </div>
-
+      <div>
+        <Clavier onKeyClick={handleKeyClick} absentLetters={absentLetters}/>
+     
+          <div className="special-keys">
+             <Key letter="Effacer" onClick={handleEffacer} />
+             <Key letter="Entrer" onClick={handleEntrer} />
+          </div>
+         </div>
     </div>
   );
 }

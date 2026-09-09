@@ -1,11 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Accueil from "./pages/Accueil";
 import Game from "./pages/Game";
-
-import { useState } from "react";
-import { Clavier } from "./clavier";
-
-import { Test } from "./clavier";
+import Resultat from "./pages/Resultat";
 
 function App() {
   return (
@@ -13,7 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Accueil />} />
         <Route path="/Game" element={<Game />} />
-        <Route path="/Test" element={<Test />} />
+        <Route path="/Resultat" element={<Resultat />} />
       </Routes>
     </BrowserRouter>
   );
