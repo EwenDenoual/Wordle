@@ -7,14 +7,14 @@ function Accueil() {
   return (
     <div className="accueil">
       <div className="contenu">
-        <h1>Bienvenue sur mon site</h1>
+        <h1>Bienvenue sur notre site !</h1>
 
         <p>
           Découvrez notre wordle !
         </p>
 
         <button 
-          onClick={() => navigate("/suivant")}
+          onClick={() => navigate("/Game")}
         >
           Commencer
         </button>
