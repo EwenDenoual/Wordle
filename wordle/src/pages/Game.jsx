@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
 import "./Game.css";
+import Clavier from "./clavier";
+import Key from "./Key";
+
+const rows = [
+  ["A", "Z", "E", "R", "T", "Y", "U", "I", "O", "P"],
+  ["Q", "S", "D", "F", "G", "H", "J", "K", "L", "M"],
+  ["W", "X", "C", "V", "B", "N",],
+];
+
+const allLetters = rows.flat();
 
 function isGoodWord(word, target) {
   const status = ["false", "false", "false", "false", "false"];
@@ -37,6 +47,7 @@ function Gettargetword() {
 
 function Game() {
   const [word, setWord] = useState("");
+  const [testedWords, setTestedWords] = useState([]);
   const target = Gettargetword();
   const [status, setStatus] = useState(isGoodWord(word, target));
 
@@ -49,6 +60,44 @@ function Game() {
 
     setStatus(result);
   }
+
+  const handleKeyClick = (letter) => {
+      if (word.length >= 5) {
+        return;
+      }
+      setWord((prev) => prev + letter);
+    };
+  
+    const handleEffacer = () => {
+      setWord((prev) => prev.slice(0, -1));
+    };
+  
+    const handleEntrer = () => {
+      handleSubmit();
+      setTestedWords((prev) => [...prev, word]);
+      setWord("");
+    };
+  
+    useEffect(() => {
+      const handlePhysicalKeyDown = (e) => {
+        const key = e.key.toUpperCase();
+  
+        if (key === "ENTER") {
+          handleEntrer();
+        } else if (key === "BACKSPACE") {
+          handleEffacer();
+        } else if (allLetters.includes(key)) {
+          handleKeyClick(key);
+        }
+      };
+  
+      window.addEventListener("keydown", handlePhysicalKeyDown);
+  
+      return () => {
+        window.removeEventListener("keydown", handlePhysicalKeyDown);
+      };
+    }, [word]);
+
   return (
     <div className="page">
       <div className="status-container">
@@ -61,20 +110,21 @@ function Game() {
       </div>
       <div className="input-container">
 
-        <input
-          type="text"
-          maxLength="5"
-          value={word}
-          onChange={(event) => setWord(event.target.value)}
-          placeholder="Entrez un mot"
-        />
-
-        <button onClick={handleSubmit}>
-          Valider
-        </button>
-
       </div>
-
+      <div>
+        <Clavier onKeyClick={handleKeyClick} />
+     
+          <div className="special-keys">
+             <Key letter="Effacer" onClick={handleEffacer} />
+             <Key letter="Entrer" onClick={handleEntrer} />
+          </div>
+          <div>
+             <h3>Mots testés :</h3>
+             {testedWords.map((word, index) => (
+               <p key={index}>{word}</p>
+             ))}
+           </div>
+         </div>
     </div>
   );
 }

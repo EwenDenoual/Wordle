@@ -2,9 +2,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Accueil from "./pages/Accueil";
 import Game from "./pages/Game";
 
-import { useState } from "react";
-import { Clavier } from "./pages/clavier";
-
 import { Test } from "./pages/clavier";
 
 function App() {

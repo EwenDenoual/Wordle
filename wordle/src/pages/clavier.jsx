@@ -1,15 +1,6 @@
 import { useState, useEffect } from "react";
 
-function Key({ letter, isGray = false, onClick }) {
-  return (
-    <button
-      className={`key ${isGray ? "key-gray" : "key-default"}`}
-      onClick={() => onClick(letter)}
-    >
-      {letter}
-    </button>
-  );
-}
+import Key from "./Key";
 
 const rows = [
   ["A", "Z", "E", "R", "T", "Y", "U", "I", "O", "P"],
@@ -96,5 +87,5 @@ function Test() {
   );
 }
 
-export default Key;
-export { Clavier, Test };
+export default Clavier;
+export { Test };
